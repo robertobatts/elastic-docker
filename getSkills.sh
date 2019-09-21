@@ -1,0 +1,1 @@
+curl -X GET "localhost:9200/skills/_search?q=$1&pretty"
