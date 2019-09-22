@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  api:
+    container_name: gs-api
+    build: .
+    ports:
+      - "3000:3000" # Expose API port
+    environment: # Set ENV vars
+     - NODE_ENV=local
+     - ES_HOST=elasticsearch
+     - PORT=3000
+    volumes: # Attach local book data directory
+      - ./skills:/usr/src/app/skills
+
+  elasticsearch: # Elasticsearch Instance
+    container_name: gs-search
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
+    volumes: # Persist ES data in seperate "esdata" volume
+      - esdata:/usr/share/elasticsearch/data
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    ports: # Expose ElasticSearch ports
+      - "9200:9200"
+
+volumes:
+  esdata:
